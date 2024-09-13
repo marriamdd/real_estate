@@ -1,27 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { Checkbox, Tag } from "antd";
-import { CloseOutlined, DownOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
+import FilterButton from "./FilterButton";
 
 const CheckboxSelector = ({ options }) => {
-  const storedItems = JSON.parse(localStorage.getItem("selectedOptions"));
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState(storedItems);
+  const [selectedItems, setSelectedItems] = useState(
+    JSON.parse(localStorage.getItem("selectedOptions"))
+  );
   const [tempSelectedItems, setTempSelectedItems] = useState([]);
   const modalRef = useRef(null);
 
   useEffect(() => {
-    // Load selected items from localStorage
     const storedItems =
       JSON.parse(localStorage.getItem("selectedOptions")) || [];
-    console.log("Loaded from localStorage:", storedItems); // Debugging line
     setSelectedItems(storedItems);
-    setTempSelectedItems(storedItems); // Sync tempSelectedItems with selectedItems
+    setTempSelectedItems(storedItems);
   }, []);
 
   useEffect(() => {
-    // Update localStorage whenever selectedItems changes
-    console.log("Saving to localStorage:", selectedItems); // Debugging line
     localStorage.setItem("selectedOptions", JSON.stringify(selectedItems));
   }, [selectedItems]);
 
@@ -42,24 +40,13 @@ const CheckboxSelector = ({ options }) => {
   const removeSelectedItem = (value) => {
     const updatedItems = selectedItems.filter((item) => item !== value);
     setSelectedItems(updatedItems);
+    setTempSelectedItems(updatedItems);
+    localStorage.setItem("selectedOptions", JSON.stringify(updatedItems));
   };
 
   const toggleModal = () => {
-    setIsModalOpen((prevState) => !prevState);
+    setIsModalOpen((prev) => !prev);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setIsModalOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const getColumns = (items, itemsPerColumn) => {
     const columns = [];
@@ -72,18 +59,12 @@ const CheckboxSelector = ({ options }) => {
   const columns = getColumns(options, 4);
 
   return (
-    <div className="relative">
-      <button
-        onClick={toggleModal}
-        className="text-lg flex items-center gap-2 relative z-10"
-      >
-        რეგიონი
-        <DownOutlined
-          className={`transition-transform duration-300 ${
-            isModalOpen ? "rotate-180" : "rotate-0"
-          }`}
-        />
-      </button>
+    <div className="flex gap-4">
+      <FilterButton
+        label="რეგიონი"
+        isModalOpen={isModalOpen}
+        toggleModal={toggleModal}
+      />
 
       <div
         ref={modalRef}
@@ -93,7 +74,7 @@ const CheckboxSelector = ({ options }) => {
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-10 invisible"
         } z-0`}
-        style={{ top: "50px", zIndex: 10, left: 0 }}
+        style={{ top: "140px", zIndex: 10 }}
       >
         <p className="text-lg font-semibold">რეგიონის მიხედვით</p>
         <div className="grid grid-cols-3 w-[679px] gap-[50px]">
@@ -138,7 +119,6 @@ const CheckboxSelector = ({ options }) => {
   );
 };
 
-// Define PropTypes for the component
 CheckboxSelector.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({

@@ -7,7 +7,7 @@
   /* Default border color */
 }
 
-.custom-checkbox .ant-checkbox-inner.ant-checkbox-checked {
+.custom-checkbox .ant-checkbox-checked .ant-checkbox-inner {
   background-color: #00a859 !important; /* Green background color */
   border-color: #00a859 !important; /* Green border color */
 }

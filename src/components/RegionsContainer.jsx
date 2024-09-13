@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import CheckboxSelector from "../components/CheckboxSelector";
 
 const RegionsContainer = () => {
@@ -17,7 +17,7 @@ const RegionsContainer = () => {
         );
         const data = await response.json();
         console.log(data);
-        // Format the API response to the desired structure
+
         const formattedOptions = data.map((region) => ({
           value: region.id,
           label: region.name,
