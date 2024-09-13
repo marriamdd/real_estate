@@ -50,7 +50,7 @@ export default function FilterList() {
   return (
     <div className="flex flex-col p-[6px] mt-[77px] gap-[24px]">
       <div className="flex justify-between">
-        <div className="flex rounded-[10px] border border-[#DBDBDB] bg-[#fff]">
+        <div className="flex gap-[24px] p-[6px] rounded-[10px] border border-[#DBDBDB] bg-[#fff]">
           <RegionsContainer />
           <PriceCategory />
           <AreaCategory />

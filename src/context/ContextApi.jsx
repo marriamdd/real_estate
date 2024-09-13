@@ -4,6 +4,8 @@ const FilterContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export const FilterProvider = ({ children }) => {
+  const [estates, setEstates] = useState();
+  const [agents, setAgents] = useState();
   const [selectedItems, setSelectedItems] = useState(() => {
     const storedItems = localStorage.getItem("selectedOptions");
     if (storedItems) {
@@ -28,6 +30,10 @@ export const FilterProvider = ({ children }) => {
         setSelectedItems,
         options,
         setOptions,
+        agents,
+        setAgents,
+        estates,
+        setEstates,
       }}
     >
       {children}

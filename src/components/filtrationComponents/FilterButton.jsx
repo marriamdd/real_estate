@@ -22,7 +22,9 @@ const FilterButton = ({ label, isModalOpen, toggleModal }) => {
     <div className="relative ">
       <button
         onClick={() => toggleModal((prev) => !prev)}
-        className="text-lg flex items-center gap-2 relative py-[8px] px-[14px] z-10"
+        className={`${
+          isModalOpen && "bg-[#F3F3F3]"
+        } text-lg flex items-center gap-2 relative py-[8px] px-[14px] z-10`}
       >
         {label}
         <DownOutlined
