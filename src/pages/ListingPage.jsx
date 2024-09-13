@@ -1,4 +1,5 @@
-import FilterList from "../components/FilterList.jsx";
+import FilterList from "../components/filtrationComponents/FilterList";
+
 export const ListingPage = () => (
   <div className="">
     <FilterList />

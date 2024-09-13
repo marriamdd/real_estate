@@ -4,12 +4,11 @@
 
 .custom-checkbox .ant-checkbox-inner {
   border: 2px solid #d9d9d9 !important;
-  /* Default border color */
 }
 
 .custom-checkbox .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #00a859 !important; /* Green background color */
-  border-color: #00a859 !important; /* Green border color */
+  background-color: #00a859 !important;
+  border-color: #00a859 !important;
 }
 
 .ant-checkbox-group {

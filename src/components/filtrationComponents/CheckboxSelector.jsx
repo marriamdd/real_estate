@@ -1,27 +1,29 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Checkbox, Tag } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
-import FilterButton from "./FilterButton";
+import { Checkbox } from "antd";
+import FilterButton from "../filtrationComponents/FilterButton";
+import { useFilterContext } from "../../context/ContextApi";
+import useClickOutside from "../../customHooks/UseClickOutSide";
 
 const CheckboxSelector = ({ options }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState(
-    JSON.parse(localStorage.getItem("selectedOptions"))
-  );
+  const { selectedItems, setSelectedItems } = useFilterContext();
   const [tempSelectedItems, setTempSelectedItems] = useState([]);
   const modalRef = useRef(null);
 
+  useClickOutside(modalRef, () => setIsModalOpen(false));
   useEffect(() => {
-    const storedItems =
-      JSON.parse(localStorage.getItem("selectedOptions")) || [];
-    setSelectedItems(storedItems);
-    setTempSelectedItems(storedItems);
+    const storedOptions =
+      JSON.parse(localStorage.getItem("selectedOptions")) || {};
+
+    const regions = storedOptions.regions || [];
+    setTempSelectedItems(regions);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("selectedOptions", JSON.stringify(selectedItems));
-  }, [selectedItems]);
+    const updatedOptions = { ...selectedItems, regions: tempSelectedItems };
+    localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+  }, [tempSelectedItems, selectedItems]);
 
   const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
@@ -33,15 +35,8 @@ const CheckboxSelector = ({ options }) => {
   };
 
   const applySelection = () => {
-    setSelectedItems(tempSelectedItems);
+    setSelectedItems((prev) => ({ ...prev, regions: tempSelectedItems }));
     setIsModalOpen(false);
-  };
-
-  const removeSelectedItem = (value) => {
-    const updatedItems = selectedItems.filter((item) => item !== value);
-    setSelectedItems(updatedItems);
-    setTempSelectedItems(updatedItems);
-    localStorage.setItem("selectedOptions", JSON.stringify(updatedItems));
   };
 
   const toggleModal = () => {
@@ -59,7 +54,7 @@ const CheckboxSelector = ({ options }) => {
   const columns = getColumns(options, 4);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 flex-col">
       <FilterButton
         label="რეგიონი"
         isModalOpen={isModalOpen}
@@ -102,18 +97,6 @@ const CheckboxSelector = ({ options }) => {
             არჩევა
           </button>
         </div>
-      </div>
-      <div className="mt-6 flex gap-2">
-        {selectedItems.map((item) => (
-          <Tag
-            key={item}
-            closable
-            onClose={() => removeSelectedItem(item)}
-            closeIcon={<CloseOutlined />}
-          >
-            {options.find((option) => option.value === item)?.label || item}
-          </Tag>
-        ))}
       </div>
     </div>
   );

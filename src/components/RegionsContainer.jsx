@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import CheckboxSelector from "../components/CheckboxSelector";
+import { useEffect } from "react";
+import CheckboxSelector from "./filtrationComponents/CheckboxSelector";
+import { useFilterContext } from "../context/ContextApi";
 
 const RegionsContainer = () => {
-  const [options, setOptions] = useState([]);
-
+  const { options, setOptions } = useFilterContext();
   useEffect(() => {
     const fetchRegions = async () => {
       try {

@@ -19,10 +19,10 @@ const FilterButton = ({ label, isModalOpen, toggleModal }) => {
   }, [toggleModal]);
 
   return (
-    <div className="relative flex gap-[24px]">
+    <div className="relative ">
       <button
         onClick={() => toggleModal((prev) => !prev)}
-        className="text-lg flex items-center gap-2 relative z-10"
+        className="text-lg flex items-center gap-2 relative py-[8px] px-[14px] z-10"
       >
         {label}
         <DownOutlined
@@ -31,14 +31,13 @@ const FilterButton = ({ label, isModalOpen, toggleModal }) => {
           }`}
         />
       </button>
-      <p>mm</p>
     </div>
   );
 };
 
 FilterButton.propTypes = {
   label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   isModalOpen: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };
