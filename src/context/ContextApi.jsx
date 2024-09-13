@@ -2,15 +2,23 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const FilterContext = createContext();
 
-// eslint-disable-next-line react/prop-types
 export const FilterProvider = ({ children }) => {
   const [selectedItems, setSelectedItems] = useState(() => {
+    // Retrieve data from local storage
     const storedItems = localStorage.getItem("selectedOptions");
-    return storedItems ? JSON.parse(storedItems) : { regions: [], prices: [] };
+    if (storedItems) {
+      const parsedItems = JSON.parse(storedItems);
+      console.log("Retrieved from localStorage:", parsedItems); // Debugging
+      return parsedItems;
+    }
+    // Return default if nothing is found
+    console.log("No data in localStorage, using default"); // Debugging
+    return { regions: [], prices: [], area: [] };
   });
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
+    console.log("Saving to localStorage:", selectedItems); // Debugging
     localStorage.setItem("selectedOptions", JSON.stringify(selectedItems));
   }, [selectedItems]);
 

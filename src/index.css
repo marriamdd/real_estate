@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Fira+GO:wght@400;700&display=swap");
+
+body {
+  font-family: "Fira GO";
+}
+
 .custom-checkbox .ant-checkbox-inner {
   border: 2px solid #d9d9d9 !important;
 }
