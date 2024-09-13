@@ -1,3 +1,4 @@
+import AgentFormModal from "../components/AddAgent";
 import Agents from "../components/Agents";
 import EstatesContainer from "../components/EstatesContainer";
 import FilterList from "../components/filtrationComponents/FilterList";
@@ -9,5 +10,6 @@ export const ListingPage = () => (
     <ActionAreaCard />
     <EstatesContainer />
     <Agents />
+    <AgentFormModal />
   </div>
 );
