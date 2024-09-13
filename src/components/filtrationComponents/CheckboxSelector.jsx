@@ -69,7 +69,7 @@ const CheckboxSelector = ({ options }) => {
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-10 invisible"
         } z-0`}
-        style={{ top: "140px", zIndex: 10 }}
+        style={{ top: "230px", zIndex: 10 }}
       >
         <p className="text-lg font-semibold">რეგიონის მიხედვით</p>
         <div className="grid grid-cols-3 w-[679px] gap-[50px]">

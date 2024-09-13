@@ -11,7 +11,7 @@ const RangeSelector = ({
   placeholderHigh,
   minLabel,
   maxLabel,
-  type, // New prop to specify the type (e.g., "price" or "area")
+  type,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lowValue, setLowValue] = useState("");
@@ -26,7 +26,9 @@ const RangeSelector = ({
   };
 
   const handleApplySelection = () => {
-    const range = `${lowValue} - ${highValue}`;
+    const range = `${lowValue ? lowValue : "-∞"} - ${
+      highValue ? highValue : "+∞"
+    }`;
     setSelectedItems((prev) => ({
       ...prev,
       [type]: [range],
@@ -146,7 +148,7 @@ RangeSelector.propTypes = {
   placeholderHigh: PropTypes.string.isRequired,
   minLabel: PropTypes.string.isRequired,
   maxLabel: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["prices", "area"]).isRequired, // Specify the type prop
+  type: PropTypes.oneOf(["prices", "area"]).isRequired,
 };
 
 export default RangeSelector;
