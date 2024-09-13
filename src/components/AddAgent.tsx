@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Input, Button, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-const AgentFormModal = () => {
+const AgentFormModal: React.FC = () => {
   const [visible, setVisible] = useState(true);
   const [form] = Form.useForm();
 
@@ -10,14 +10,13 @@ const AgentFormModal = () => {
     setVisible(false);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values: any) => {
     console.log("Form Data:", values);
     message.success("Agent added successfully");
     setVisible(false);
   };
 
-  // Custom validator for Redberry email
-  const validateRedberryEmail = (_, value) => {
+  const validateRedberryEmail = (_: any, value: string) => {
     if (value && !value.endsWith("@redberry.ge")) {
       return Promise.reject(new Error("Email must end with @redberry.ge"));
     }
@@ -26,125 +25,122 @@ const AgentFormModal = () => {
 
   return (
     <>
-      {/* Button to trigger modal */}
       <Button type="primary" onClick={() => setVisible(true)}>
         Add Agent
       </Button>
 
-      {/* Modal */}
       <Modal
-        style={{ width: "1009px" }}
-        title="Add New Agent"
+        title="აგენტი დამატება"
         visible={visible}
         onCancel={handleCancel}
         footer={null}
         centered
         destroyOnClose
-        maskStyle={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }} // Gray transparent background
+        className="custom-modal"
       >
         <Form
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          validateTrigger={["onBlur", "onChange"]} // Trigger validation on blur and input change
+          validateTrigger={["onChange", "onBlur"]}
+          onValuesChange={() => {
+            form.validateFields().catch(() => {});
+          }}
         >
-          {/* Name and Last Name side by side */}
           <div style={{ display: "flex", gap: "16px" }}>
             <Form.Item
               name="firstName"
-              label="First Name"
+              label="სახელი"
               rules={[
-                { required: true, message: "Please enter your first name" },
+                { required: true, message: "გთხოვთ,შეიყვანეთ სახელი" },
                 {
                   min: 2,
-                  message: "First name must be at least 2 characters long",
+                  message: "გთხოვთ, შეიყვანეთ  მინიმუმ ორი სიმბოლო",
                 },
               ]}
               style={{ flex: 1 }}
             >
-              <Input placeholder="First Name" />
-
-              <div className="flex">
-                <img src="/Vector.svg" alt="" />
-                <p> მინიმუმ ორი სიმბოლო</p>
-              </div>
+              <Input />
             </Form.Item>
             <Form.Item
               name="lastName"
-              label="Last Name"
+              label="გვარი"
               rules={[
-                { required: true, message: "Please enter your last name" },
+                { required: true, message: "გთხოვთ, შეიყვანეთ გვარი" },
                 {
                   min: 2,
-                  message: "Last name must be at least 2 characters long",
+                  message: "გთხოვთ, შეიყვანეთ  მინიმუმ ორი სიმბოლო",
                 },
               ]}
               style={{ flex: 1 }}
             >
-              <Input placeholder="Last Name" />
-              <div className="flex">
-                <img src="/Vector.svg" alt="" />
-                <p> მინიმუმ ორი სიმბოლო</p>
-              </div>
+              <Input />
             </Form.Item>
           </div>
 
-          {/* Phone Number and Gmail side by side */}
           <div style={{ display: "flex", gap: "16px" }}>
             <Form.Item
-              name="phoneNumber"
-              label="Phone Number"
-              rules={[
-                { required: true, message: "Please enter your phone number" },
-                {
-                  pattern: /^[0-9]+$/,
-                  message: "Phone number must only contain numbers",
-                },
-              ]}
-              style={{ flex: 1 }}
-            >
-              <Input placeholder="Phone Number" />
-              <div className="flex">
-                <img src="/Vector.svg" alt="" />
-                <p>მხოლოდ რიცხვები</p>
-              </div>
-            </Form.Item>
-            <Form.Item
               name="email"
-              label="Gmail"
+              label="ელ-ფოსტა*"
               rules={[
-                { required: true, message: "Please enter your Gmail" },
+                { required: true, message: "გთხოვთ, შეიყვანოთ მეილი" },
                 { validator: validateRedberryEmail },
               ]}
               style={{ flex: 1 }}
             >
-              <Input placeholder="Gmail" />
-              <div className="flex">
-                <img src="/Vector.svg" alt="" />
-                <p>გამოიყენეთ @redberry.ge ფოსტა</p>
-              </div>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="phoneNumber"
+              label="ტელეფონის ნომერი"
+              rules={[
+                {
+                  required: true,
+                  message: "გთხოვთ, შეიყვანეთ ტელეფონის ნომერი",
+                },
+                {
+                  pattern: /^[0-9]+$/,
+                  message: "ნომერი უნდა შეიცვადეს მხოლოდ ციფრებს",
+                },
+              ]}
+              style={{ flex: 1 }}
+            >
+              <Input />
             </Form.Item>
           </div>
 
-          {/* Upload Image */}
           <Form.Item
             name="image"
-            label="Upload Image"
+            label="ატვირთეთ ფოტო *"
             valuePropName="fileList"
-            getValueFromEvent={(e) => e.fileList}
-            rules={[{ required: true, message: "Please upload an image" }]}
+            getValueFromEvent={(e: any) => e.fileList}
+            rules={[{ required: true, message: "გთხოვთ ატვირთეთ ფოტო" }]}
           >
             <Upload beforeUpload={() => false} listType="picture">
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              <div className="upload-container ">
+                <img
+                  src="/plus-circle.svg"
+                  alt="Upload Icon"
+                  className="upload-icon"
+                />
+              </div>
             </Upload>
           </Form.Item>
 
-          {/* Submit button */}
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Add Agent
-            </Button>
-          </Form.Item>
+          <div className="flex w-full justify-end gap-[15px] pr-[85px]">
+            <button
+              className="bg-[#F93B1D] rounded-[10px] h-[47px] py-[10px] border text-[white] px-[16px] text-[16px] font-[500] "
+              type="submit"
+            >
+              დამატება
+            </button>
+            <button
+              className="text-[#F93B1D] rounded-[10px] h-[47px] py-[10px] border border-[#F93B1D] px-[16px] text-[16px] font-[500] "
+              onClick={handleCancel}
+            >
+              გაუქმება
+            </button>
+          </div>
         </Form>
       </Modal>
     </>
