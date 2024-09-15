@@ -13,7 +13,6 @@ const AgentFormModal: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     try {
-      // Prepare form data
       const formData = new FormData();
       formData.append("name", values.firstName);
       formData.append("surname", values.lastName);
@@ -21,30 +20,26 @@ const AgentFormModal: React.FC = () => {
       formData.append("phone", values.phoneNumber);
 
       if (values.image && values.image.length > 0) {
-        formData.append("avatar", values.image[0].originFileObj); // Add the image file
+        formData.append("avatar", values.image[0].originFileObj);
       }
 
-      // Post data to the API
       const response = await fetch(
         "https://api.real-estate-manager.redberryinternship.ge/api/agents",
         {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
-            // Do not set 'Content-Type' header for FormData
           },
           body: formData,
         }
       );
 
-      // Check if the response is JSON
       const contentType = response.headers.get("Content-Type") || "";
       if (contentType.includes("application/json")) {
         const data = await response.json();
         console.log("API response:", data);
         message.success("Agent added successfully");
       } else {
-        // If the response is not JSON, handle accordingly
         const responseText = await response.text();
         console.error("Error response:", responseText);
         if (responseText.includes("<!doctype html>")) {
