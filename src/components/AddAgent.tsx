@@ -3,17 +3,62 @@ import { Modal, Form, Input, Button, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
 const AgentFormModal: React.FC = () => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
   const handleCancel = () => {
     setVisible(false);
   };
+  const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
 
-  const handleSubmit = (values: any) => {
-    console.log("Form Data:", values);
-    message.success("Agent added successfully");
-    setVisible(false);
+  const handleSubmit = async (values: any) => {
+    try {
+      // Prepare form data
+      const formData = new FormData();
+      formData.append("name", values.firstName);
+      formData.append("surname", values.lastName);
+      formData.append("email", values.email);
+      formData.append("phone", values.phoneNumber);
+
+      if (values.image && values.image.length > 0) {
+        formData.append("avatar", values.image[0].originFileObj); // Add the image file
+      }
+
+      // Post data to the API
+      const response = await fetch(
+        "https://api.real-estate-manager.redberryinternship.ge/api/agents",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            // Do not set 'Content-Type' header for FormData
+          },
+          body: formData,
+        }
+      );
+
+      // Check if the response is JSON
+      const contentType = response.headers.get("Content-Type") || "";
+      if (contentType.includes("application/json")) {
+        const data = await response.json();
+        console.log("API response:", data);
+        message.success("Agent added successfully");
+      } else {
+        // If the response is not JSON, handle accordingly
+        const responseText = await response.text();
+        console.error("Error response:", responseText);
+        if (responseText.includes("<!doctype html>")) {
+          throw new Error("Received HTML response, possibly an error page");
+        }
+        throw new Error("Received unexpected response format");
+      }
+      setVisible(false);
+    } catch (error) {
+      console.error("Error:", error);
+      message.error(
+        "Failed to add agent. Please check your input and try again."
+      );
+    }
   };
 
   const validateRedberryEmail = (_: any, value: string) => {
@@ -25,10 +70,12 @@ const AgentFormModal: React.FC = () => {
 
   return (
     <>
-      <Button type="primary" onClick={() => setVisible(true)}>
-        Add Agent
-      </Button>
-
+      <button
+        onClick={() => setVisible(true)}
+        className="text-[16px] text-[#F93B1D] rounded-[10px] border border-[#F93B1D] font-[500] py-[10px] px-[16px]"
+      >
+        + აგენტის დამატება
+      </button>
       <Modal
         title="აგენტი დამატება"
         visible={visible}

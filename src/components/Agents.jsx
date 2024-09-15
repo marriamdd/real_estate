@@ -27,7 +27,7 @@ const Agents = () => {
 
     fetchRegions();
   }, []);
-  console.log(agents);
+  console.log(agents, "getting agent");
   return <div></div>;
 };
 

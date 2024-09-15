@@ -1,6 +1,7 @@
 import { useFilterContext } from "../../context/ContextApi";
+import AgentFormModal from "../AddAgent";
 import RegionsContainer from "../RegionsContainer";
-import AddAgent from "./AddAgent";
+
 import AddListing from "./AddListing";
 import AreaCategory from "./AreaCategory";
 import NumOfBedrooms from "./NumOfBedrooms";
@@ -58,7 +59,7 @@ export default function FilterList() {
         </div>
         <div className="flex gap-[16px]">
           <AddListing />
-          <AddAgent />
+          <AgentFormModal />
         </div>
       </div>
 
