@@ -1,5 +1,5 @@
 import { useFilterContext } from "../../context/ContextApi";
-import AgentFormModal from "../AddAgent";
+import AgentFormModal from "../agents/AddAgent";
 import RegionsContainer from "../RegionsContainer";
 
 import AddListing from "./AddListing";

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import { Modal, Form, Input, Button, Upload, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { Modal, Form, Input, Upload, message } from "antd";
 
-const AgentFormModal: React.FC = () => {
+const AgentFormModal = () => {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
@@ -11,7 +10,7 @@ const AgentFormModal: React.FC = () => {
   };
   const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values) => {
     try {
       const formData = new FormData();
       formData.append("name", values.firstName);
@@ -56,7 +55,7 @@ const AgentFormModal: React.FC = () => {
     }
   };
 
-  const validateRedberryEmail = (_: any, value: string) => {
+  const validateRedberryEmail = (_, value) => {
     if (value && !value.endsWith("@redberry.ge")) {
       return Promise.reject(new Error("Email must end with @redberry.ge"));
     }
@@ -155,7 +154,7 @@ const AgentFormModal: React.FC = () => {
             name="image"
             label="ატვირთეთ ფოტო *"
             valuePropName="fileList"
-            getValueFromEvent={(e: any) => e.fileList}
+            getValueFromEvent={(e) => e.fileList}
             rules={[{ required: true, message: "გთხოვთ ატვირთეთ ფოტო" }]}
           >
             <Upload beforeUpload={() => false} listType="picture">
