@@ -110,3 +110,47 @@ body {
 .upload-container {
   width: 800px !important;
 }
+.ant-form-item-required {
+  width: 200px !important;
+
+  text-wrap: nowrap !important
+  ;
+}
+.ant-form-item-control-input-content {
+  display: flex;
+  flex-direction: column;
+}
+.ant-input-outlined {
+  width: 386px !important;
+  height: 42px !important;
+}
+.ant-select-selector {
+  width: 386px !important;
+  height: 42px !important;
+}
+.area .ant-input-outlined {
+  width: 788px !important;
+  height: 135px !important;
+}
+.area .css-dev-only-do-not-override-qnu6hi {
+  width: 788px !important;
+}
+/* .img .css-dev-only-do-not-override-qnu6hi {
+  width: 788px !important;
+  border: 1px solid red !important;
+}
+.ant-upload-wrapper img css-dev-only-do-not-override-qnu6hi {
+  width: 788px !important;
+  border: 1px solid red !important;
+}
+.img .css-dev-only-do-not-override-qnu6hi {
+  width: 788px !important;
+  border: 1px solid red !important;
+} */
+/* .img .css-dev-only-do-not-override-qnu6hi {
+  width: 788px !important;
+  border: 1px solid red !important;
+}
+.upload .css-dev-only-do-not-override-qnu6hi {
+  border: 1px !important;
+} */
