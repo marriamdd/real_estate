@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +26,31 @@ const FormComponent = () => {
       console.error("Submission error:", error);
     }
   };
+  const [imageURL, setImageURL] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [size, setSize] = useState(null);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    console.log(file.size, "images size ");
+    setSize(file.size);
+    console.log(file.size <= 1048576 || "არ უნდა აღემატებოდეს 1MB-ს");
+    if (e.target.files && e.target.files.length > 0) {
+      setImageURL(URL.createObjectURL(file));
+      setFileName(file.name);
 
+      trigger("image");
+    }
+  };
+
+  const handleImageRemove = (e) => {
+    e.preventDefault();
+    // e.stopPropagation();
+
+    setImageURL(null);
+    setFileName("");
+
+    trigger("image");
+  };
   const address = watch("address");
   const zipCode = watch("zipCode");
   const region = watch("region");
@@ -41,12 +66,14 @@ const FormComponent = () => {
     const wordCount = value?.trim().split(/\s+/).length;
     return wordCount >= 5 || "მინიმუმ ხუთი სიტყვა";
   };
+
   console.log(errors);
   return (
     <div className="w-[790px] mx-auto bg-white p-8 rounded-md">
       <p className="text-[16px] font-[500]  text-center mb-[60px]">
         ლისტინგის დამატება
       </p>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
           <label className="block text-gray-700 font-medium">
@@ -89,7 +116,7 @@ const FormComponent = () => {
 
                 minLength: {
                   value: 2,
-                  message: "მინიმუმ ორი სიმბოლო", // Error message in Georgian
+                  message: "მინიმუმ ორი სიმბოლო",
                 },
               }}
               render={({ field }) => (
@@ -455,25 +482,80 @@ const FormComponent = () => {
             rules={{
               required: "ატვირთეთ ფოტო",
               validate: {
-                lessThan1MB: (value) => {
-                  return (
-                    value?.[0]?.size <= 1048576 || "არ უნდა აღემატებოდეს 1MB-ს"
-                  );
+                lessThan1MB: (files) => {
+                  if (!files?.length) return "ატვირთეთ ფოტო";
+                  const file = files[0];
+
+                  console.log(files, "validateshi");
+                  return size <= 1048576 || "არ უნდა აღემატებოდეს 1MB-ს";
                 },
               },
             }}
             render={({ field }) => (
-              <input
-                {...field}
-                type="file"
-                className={`mt-2 p-2 h-[120px] border border-dashed rounded-md w-full  ${
-                  image
-                    ? "border-green-500"
-                    : errors.image
-                    ? "border-[#F93B1D]"
-                    : "border-gray-300"
-                }`}
-              />
+              <>
+                {!imageURL && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="file-upload"
+                    {...field}
+                    className="hidden"
+                    onChange={(e) => {
+                      handleImageChange(e);
+                      field.onChange(e); // Ensure field value is updated
+                    }}
+                  />
+                )}
+
+                {/* {imageURL && (
+                  <div className="relative mt-4">
+                    <img src={imageURL} width={60} height={60} alt="Preview" />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        handleImageRemove(e);
+                        field.onChange(e);
+                      }}
+                      className="absolute top-0 right-0 p-1 bg-white rounded-full shadow-md"
+                    >
+                      <p className="text-[red]">x</p>
+                    </button>
+                  </div>
+                )} */}
+                <label
+                  htmlFor="file-upload"
+                  className={`cursor-pointer flex flex-col items-center justify-center p-2 h-[120px] border border-dashed rounded-md w-full ${
+                    imageURL
+                      ? "border-green-500"
+                      : errors.image
+                      ? "border-[#F93B1D]"
+                      : "border-gray-300"
+                  }`}
+                >
+                  {imageURL && (
+                    <div className="relative mt-4">
+                      <img
+                        src={imageURL}
+                        width={92}
+                        height={82}
+                        className="rounded-[4px]"
+                        alt="Preview"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          handleImageRemove(e);
+                          field.onChange(e);
+                        }}
+                        className="absolute bottom-[-10px]  right-0 p-1 w-[24px] h-[23px] rounded-full  bg-white border shadow-md"
+                      >
+                        <img src="/trash-2.svg" alt="" />
+                      </button>
+                    </div>
+                  )}
+                  {!imageURL && <img src="/plus-circle.svg" />}
+                </label>
+              </>
             )}
           />
         </div>
