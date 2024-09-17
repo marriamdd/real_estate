@@ -1,50 +1,78 @@
-import { useState } from "react";
+import { stringify } from "postcss";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const FormComponent = () => {
+  const savedFormData = JSON.parse(localStorage.getItem("formData")) || {
+    transactionType: "sale",
+  };
+  console.log(savedFormData, "savedFormData");
   const navigate = useNavigate();
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
     trigger,
+    reset,
     register,
     watch,
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      transactionType: "sale",
-    },
+    // defaultValues: savedFormData || "",
   });
+  console.log(watch("image"), "image");
+
+  useEffect(() => {
+    const newFormData = { ...savedFormData, image: null };
+    const storagedImage = localStorage.getItem("imageUrl");
+
+    if (storagedImage) {
+      setImageURL(storagedImage);
+    }
+    reset(newFormData);
+  }, []);
 
   const onSubmit = async (data) => {
     try {
       console.log("Form submitted:", data);
       navigate("/");
+      localStorage.removeItem("formData");
     } catch (error) {
       console.error("Submission error:", error);
     }
   };
+
+  const watchAllFields = watch();
+
+  useEffect(() => {
+    // Save only the form values to localStorage without nesting
+    localStorage.setItem("formData", JSON.stringify(watchAllFields));
+  }, [watchAllFields]);
+
   const [imageURL, setImageURL] = useState(null);
   const [fileName, setFileName] = useState("");
   const [size, setSize] = useState(null);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     console.log(file.size, "images size ");
     setSize(file.size);
     console.log(file.size <= 1048576 || "არ უნდა აღემატებოდეს 1MB-ს");
     if (e.target.files && e.target.files.length > 0) {
-      setImageURL(URL.createObjectURL(file));
-      setFileName(file.name);
-
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        localStorage.setItem("imageUrl", reader.result);
+        setImageURL(reader.result);
+      };
+      reader.readAsDataURL(file);
       trigger("image");
     }
   };
 
+  console.log(imageURL, "stored image");
   const handleImageRemove = (e) => {
     e.preventDefault();
-    // e.stopPropagation();
 
     setImageURL(null);
     setFileName("");
@@ -68,6 +96,7 @@ const FormComponent = () => {
   };
 
   console.log(errors);
+  console.log(imageURL, "srccc");
   return (
     <div className="w-[790px] mx-auto bg-white p-8 rounded-md">
       <p className="text-[16px] font-[500]  text-center mb-[60px]">
@@ -110,6 +139,7 @@ const FormComponent = () => {
             </label>
             <Controller
               name="address"
+              defaultValue={savedFormData.address || ""}
               control={control}
               rules={{
                 required: "მინიმუმ ორი სიმბოლო",
@@ -125,7 +155,7 @@ const FormComponent = () => {
                   className={`mt-2 p-2 border rounded-md w-full ${
                     errors.address
                       ? "border-[#F93B1D]"
-                      : address
+                      : address?.length > 2
                       ? "border-green-500"
                       : "border-gray-300"
                   }`}
@@ -163,6 +193,7 @@ const FormComponent = () => {
             </label>
             <Controller
               name="zipCode"
+              // defaultValue={savedFormData.zipCode || ""}
               control={control}
               rules={{
                 required: "გთხოვთ შეიყვანოთ საფოსტო ინდექსი",
@@ -217,6 +248,7 @@ const FormComponent = () => {
             <Controller
               name="region"
               control={control}
+              defaultValue={savedFormData.region || ""}
               rules={{ required: "გთხოვთ აირჩიოთ რეგიონი" }}
               render={({ field }) => (
                 <select
@@ -247,6 +279,7 @@ const FormComponent = () => {
             </label>
             <Controller
               name="city"
+              defaultValue={savedFormData.city || ""}
               control={control}
               rules={{ required: "გთხოვთ აირჩიოთ ქალაქი" }}
               render={({ field }) => (
@@ -279,6 +312,7 @@ const FormComponent = () => {
             </label>
             <Controller
               name="price"
+              defaultValue={savedFormData.price || ""}
               control={control}
               rules={{
                 required: "გთხოვთ შეიყვანოთ ფასი",
@@ -331,6 +365,7 @@ const FormComponent = () => {
             </label>
             <Controller
               name="area"
+              defaultValue={savedFormData.area || ""}
               control={control}
               rules={{
                 required: "გთხოვთ შეიყვანოთ ფართი",
@@ -383,6 +418,7 @@ const FormComponent = () => {
             საძინებლებს რაოდენობა <span className="text-[#F93B1D]">*</span>
           </label>
           <Controller
+            defaultValue={savedFormData.bedrooms || ""}
             name="bedrooms"
             control={control}
             rules={{ required: "მხოლოდ რიცხვები" }}
@@ -431,6 +467,7 @@ const FormComponent = () => {
           </label>
           <Controller
             name="description"
+            defaultValue={savedFormData.description || ""}
             control={control}
             rules={{ validate: validateDescription }}
             render={({ field }) => (
@@ -478,14 +515,14 @@ const FormComponent = () => {
           </label>
           <Controller
             name="image"
+            // defaultValue={savedFormData.image || ""}
             control={control}
             rules={{
               required: "ატვირთეთ ფოტო",
               validate: {
                 lessThan1MB: (files) => {
                   if (!files?.length) return "ატვირთეთ ფოტო";
-                  const file = files[0];
-
+                  console.log(files[0], "files[0]");
                   console.log(files, "validateshi");
                   return size <= 1048576 || "არ უნდა აღემატებოდეს 1MB-ს";
                 },
@@ -507,21 +544,6 @@ const FormComponent = () => {
                   />
                 )}
 
-                {/* {imageURL && (
-                  <div className="relative mt-4">
-                    <img src={imageURL} width={60} height={60} alt="Preview" />
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        handleImageRemove(e);
-                        field.onChange(e);
-                      }}
-                      className="absolute top-0 right-0 p-1 bg-white rounded-full shadow-md"
-                    >
-                      <p className="text-[red]">x</p>
-                    </button>
-                  </div>
-                )} */}
                 <label
                   htmlFor="file-upload"
                   className={`cursor-pointer flex flex-col items-center justify-center p-2 h-[120px] border border-dashed rounded-md w-full ${
@@ -535,7 +557,7 @@ const FormComponent = () => {
                   {imageURL && (
                     <div className="relative mt-4">
                       <img
-                        src={imageURL}
+                        src={imageURL || localStorage.getItem("imageUrl")}
                         width={92}
                         height={82}
                         className="rounded-[4px]"
@@ -566,6 +588,7 @@ const FormComponent = () => {
           <span className="w-[14px] ">აირჩიე</span>
           <Controller
             name="agent"
+            defaultValue={savedFormData.agent || ""}
             control={control}
             rules={{ required: "გთხოვთ აირჩიოთ აგენტი" }}
             render={({ field }) => (
