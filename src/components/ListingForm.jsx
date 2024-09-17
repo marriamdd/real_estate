@@ -1,12 +1,16 @@
-import { stringify } from "postcss";
+// import { stringify } from "postcss";
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useFetchAgents } from "./agents/GetAgents";
+// import useAddListing from "./listings/AddListings";
 
 const FormComponent = () => {
   const savedFormData = JSON.parse(localStorage.getItem("formData")) || {
     transactionType: "sale",
   };
+  // const { ragav } = useAddListing();
+  // console.log(ragav);
   console.log(savedFormData, "savedFormData");
   const navigate = useNavigate();
   const {
@@ -19,10 +23,11 @@ const FormComponent = () => {
     watch,
   } = useForm({
     mode: "onChange",
-    // defaultValues: savedFormData || "",
   });
   console.log(watch("image"), "image");
 
+  const { agents } = useFetchAgents();
+  console.log(agents, "agents");
   useEffect(() => {
     const newFormData = { ...savedFormData, image: null };
     const storagedImage = localStorage.getItem("imageUrl");
@@ -37,6 +42,7 @@ const FormComponent = () => {
     try {
       console.log("Form submitted:", data);
       navigate("/");
+      localStorage.removeItem("imageUrl");
       localStorage.removeItem("formData");
     } catch (error) {
       console.error("Submission error:", error);
@@ -46,7 +52,6 @@ const FormComponent = () => {
   const watchAllFields = watch();
 
   useEffect(() => {
-    // Save only the form values to localStorage without nesting
     localStorage.setItem("formData", JSON.stringify(watchAllFields));
   }, [watchAllFields]);
 
@@ -76,6 +81,7 @@ const FormComponent = () => {
 
     setImageURL(null);
     setFileName("");
+    localStorage.removeItem("imageUrl");
 
     trigger("image");
   };
@@ -104,24 +110,25 @@ const FormComponent = () => {
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div>
+        <div className="radio-group">
           <label className="block text-gray-700 font-medium">
             გარიგების ტიპი <span className="text-[#F93B1D]">*</span>
           </label>
           <div className="flex gap-[32px] pb-[80px] items-center space-x-4 mt-2">
             <label>
               <input
+                className="mr-[5px]"
                 type="radio"
                 value="sale"
                 {...register("transactionType", {
                   required: "გთხოვთ აირჩიოთ გარიგების ტიპი",
                 })}
-                defaultChecked
               />
               იყიდება
             </label>
             <label>
               <input
+                className="mr-[5px]"
                 type="radio"
                 value="rent"
                 {...register("transactionType", {
@@ -155,7 +162,7 @@ const FormComponent = () => {
                   className={`mt-2 p-2 border rounded-md w-full ${
                     errors.address
                       ? "border-[#F93B1D]"
-                      : address?.length > 2
+                      : address?.trim().length > 2
                       ? "border-green-500"
                       : "border-gray-300"
                   }`}
@@ -171,14 +178,14 @@ const FormComponent = () => {
               className={`text-sm flex gap-[5px] ${
                 errors.address
                   ? "text-[#F93B1D]"
-                  : address && address.length >= 2
+                  : address && address.trim().length >= 2
                   ? "text-green-500"
                   : "text-gray-700"
               }`}
             >
               {errors.address ? (
                 <img src="/Vector (4).svg" alt="Error icon" />
-              ) : address && address.length >= 2 ? (
+              ) : address && address.trim().length >= 2 ? (
                 <img src="/Vector (3).svg" alt="Success icon" />
               ) : (
                 <img src="/Vector.svg" alt="Default icon" />
@@ -193,7 +200,6 @@ const FormComponent = () => {
             </label>
             <Controller
               name="zipCode"
-              // defaultValue={savedFormData.zipCode || ""}
               control={control}
               rules={{
                 required: "გთხოვთ შეიყვანოთ საფოსტო ინდექსი",
@@ -209,7 +215,7 @@ const FormComponent = () => {
                   className={`mt-2 p-2 border rounded-md w-full ${
                     errors.zipCode
                       ? "border-[#F93B1D]"
-                      : zipCode
+                      : zipCode?.trim().length > 2
                       ? "border-green-500"
                       : "border-gray-300"
                   }`}
@@ -277,6 +283,7 @@ const FormComponent = () => {
             <label className="block text-gray-700 font-medium">
               ქალაქი <span className="text-[#F93B1D]">*</span>
             </label>
+
             <Controller
               name="city"
               defaultValue={savedFormData.city || ""}
@@ -509,21 +516,19 @@ const FormComponent = () => {
           </p>
         </div>
 
-        <div className="w-[788px]">
+        <div className="w-[788px] ">
           <label className="block text-gray-700 font-medium">
             ატვირთეთ ფოტო *
           </label>
           <Controller
             name="image"
-            // defaultValue={savedFormData.image || ""}
             control={control}
             rules={{
               required: "ატვირთეთ ფოტო",
               validate: {
                 lessThan1MB: (files) => {
                   if (!files?.length) return "ატვირთეთ ფოტო";
-                  console.log(files[0], "files[0]");
-                  console.log(files, "validateshi");
+
                   return size <= 1048576 || "არ უნდა აღემატებოდეს 1MB-ს";
                 },
               },
@@ -539,7 +544,7 @@ const FormComponent = () => {
                     className="hidden"
                     onChange={(e) => {
                       handleImageChange(e);
-                      field.onChange(e); // Ensure field value is updated
+                      field.onChange(e);
                     }}
                   />
                 )}
@@ -560,7 +565,7 @@ const FormComponent = () => {
                         src={imageURL || localStorage.getItem("imageUrl")}
                         width={92}
                         height={82}
-                        className="rounded-[4px]"
+                        className="rounded-[4px] mb-[20px]"
                         alt="Preview"
                       />
                       <button
@@ -569,7 +574,7 @@ const FormComponent = () => {
                           handleImageRemove(e);
                           field.onChange(e);
                         }}
-                        className="absolute bottom-[-10px]  right-0 p-1 w-[24px] h-[23px] rounded-full  bg-white border shadow-md"
+                        className="absolute bottom-[15px]  right-[-8px] p-1 w-[24px] h-[23px] rounded-full  bg-white border border-[black] shadow-md"
                       >
                         <img src="/trash-2.svg" alt="" />
                       </button>
@@ -606,9 +611,11 @@ const FormComponent = () => {
                   trigger("agent");
                 }}
               >
-                <option value="">აირჩიეთ</option>
-                <option value="agent1">agent 1</option>
-                <option value="agent2">agent 2</option>
+                {agents.map((agent) => (
+                  <option key={agent.id} value={agent.id}>
+                    {`${agent.name} ${agent.surname}`}
+                  </option>
+                ))}
               </select>
             )}
           />

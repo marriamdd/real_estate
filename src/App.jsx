@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./layouts/Layout";
-import { ListingPage } from "./pages/ListingPage";
+import ListingPage from "./pages/ListingPage";
 import { FilterProvider } from "./context/ContextApi";
 import AddListing from "./pages/AddListing";
 
