@@ -204,3 +204,10 @@ body {
 input[type="radio"] {
   accent-color: rgb(3, 3, 3);
 }
+
+.css-19ngvud-MuiCardMedia-root {
+  height: 307px !important;
+}
+.css-1oitmrd-MuiButtonBase-root-MuiCardActionArea-root {
+  height: 455px !important;
+}
