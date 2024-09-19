@@ -6,7 +6,8 @@ const FilterContext = createContext();
 export const FilterProvider = ({ children }) => {
   const [estates, setEstates] = useState();
   const [agents, setAgents] = useState();
-  const [visibleAddingAgent, setVisibleAddingAgent] = useState(false);
+
+  const [allSelectedCategory, setAllSelectedCategory] = useState([]);
   const [selectedItems, setSelectedItems] = useState(() => {
     const storedItems = localStorage.getItem("selectedOptions");
     if (storedItems) {
@@ -35,8 +36,8 @@ export const FilterProvider = ({ children }) => {
         setAgents,
         estates,
         setEstates,
-        visibleAddingAgent,
-        setVisibleAddingAgent,
+        allSelectedCategory,
+        setAllSelectedCategory,
       }}
     >
       {children}

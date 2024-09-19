@@ -12,6 +12,7 @@ import { Tag } from "antd";
 export default function FilterList() {
   const { selectedItems, setSelectedItems, options } = useFilterContext();
 
+  console.log(selectedItems, "selectedItems");
   const handleRemoveItem = (item) => {
     let updatedItems = { ...selectedItems };
 
@@ -48,6 +49,17 @@ export default function FilterList() {
     ...selectedItems.rooms,
   ];
 
+  const handleRemoveFlirtations = () => {
+    setSelectedItems({
+      area: [],
+
+      prices: [],
+
+      regions: [],
+
+      rooms: [],
+    });
+  };
   return (
     <div className="flex flex-col p-[6px] mt-[77px] gap-[24px]">
       <div className="flex justify-between">
@@ -77,6 +89,12 @@ export default function FilterList() {
               {options.find((option) => option.value === item)?.label || item}
             </Tag>
           ))}
+          <p
+            onClick={() => handleRemoveFlirtations()}
+            className="text-[15px] cursor-pointer font-[500]"
+          >
+            გასუფთავება
+          </p>
         </div>
       )}
     </div>
