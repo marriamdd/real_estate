@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import EstateDetails from "../components/currentestate/EstateDetails";
+import SimilarLocationEstates from "../components/SimilarLocationEstates";
 
 export default function SingleListing() {
   const { id } = useParams();
@@ -39,6 +40,7 @@ export default function SingleListing() {
         alt="back home"
       />
       <EstateDetails currentEstate={currentEstate} />
+      <SimilarLocationEstates currentEstate={currentEstate} />
     </div>
   );
 }

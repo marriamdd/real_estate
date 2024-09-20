@@ -3,80 +3,13 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
-import useGetListing from "./listings/GetListing";
-import { useFilterContext } from "../context/ContextApi";
 import { Link } from "react-router-dom";
-
-const formatNumber = (num) => {
-  if (isNaN(num)) return "Invalid Number";
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-};
-
-export const formatPrice = (price) => {
-  return `${formatNumber(price)} ₾`;
-};
-
-export const formatRange = (range, isPrice = false) => {
-  const [min, max] = range;
-  if (isPrice) {
-    return `${formatPrice(min)} - ${formatPrice(max)}`;
-  } else {
-    return `${formatNumber(min)} მ² - ${formatNumber(max)} მ²`;
-  }
-};
+import useFilterListings from "../customHooks/useFilter";
+import { formatPrice } from "../../public/utils/formatPrice";
+import { formatRange } from "../../public/utils/formatRange";
 
 export default function ActionAreaCard() {
-  const { selectedItems } = useFilterContext();
-  const { listings } = useGetListing();
-  console.log(listings, "listingslistingslistingslistingslistings");
-  const parseRange = (rangeStr, isPrice = false) => {
-    const range = rangeStr
-      .replace(/[^\d -]/g, "")
-      .split("-")
-      .map((val) => parseFloat(val.trim()));
-    return isPrice ? range.map((val) => val * 1000) : range;
-  };
-
-  const filterListings = () => {
-    if (
-      selectedItems.regions.length === 0 &&
-      selectedItems.area.length === 0 &&
-      selectedItems.prices.length === 0 &&
-      selectedItems.rooms.length === 0
-    ) {
-      return listings;
-    }
-
-    return listings.filter((listing) => {
-      const { city, bedrooms, area, price } = listing;
-
-      const matchesRegion =
-        selectedItems.regions.length === 0 ||
-        selectedItems.regions.includes(city?.region_id);
-
-      const matchesRooms =
-        selectedItems.rooms.length === 0 ||
-        selectedItems.rooms.includes(String(bedrooms));
-
-      const matchesArea =
-        selectedItems.area.length === 0 ||
-        selectedItems.area.some((range) => {
-          const [minArea, maxArea] = parseRange(range);
-          return area >= minArea && area <= maxArea;
-        });
-
-      const matchesPrice =
-        selectedItems.prices.length === 0 ||
-        selectedItems.prices.some((range) => {
-          const [minPrice, maxPrice] = parseRange(range, true);
-          return price >= minPrice && price <= maxPrice;
-        });
-
-      return matchesRegion && matchesRooms && matchesArea && matchesPrice;
-    });
-  };
-
-  const filteredListings = filterListings();
+  const filteredListings = useFilterListings();
 
   return (
     <div className="flex flex-wrap gap-[10px] mt-[32px] rounded-[14px]">
@@ -94,10 +27,7 @@ export default function ActionAreaCard() {
                 <CardMedia
                   component="img"
                   height="307"
-                  image={
-                    listing.image ||
-                    "/static/images/cards/contemplative-reptile.jpg"
-                  }
+                  image={listing?.image}
                   alt={
                     listing.city?.name
                       ? `Image of property in ${listing.city.name}`

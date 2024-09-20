@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 
+import { formatPrice } from "../../../public/utils/formatPrice";
 import AgentComponent from "../agents/AgentComponent";
 import DeleteEstate from "../DeleteEstate";
-import { formatPrice } from "../ListItemPattern";
 
 export default function EstateDetails({ currentEstate }) {
   console.log(currentEstate, "currentEstate from details");
