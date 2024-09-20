@@ -38,7 +38,7 @@ body {
 .ant-modal-title {
   color: #021526;
   display: flex;
-  margin-right: 130px !important;
+
   margin-bottom: 61px !important;
   margin-top: 87px !important;
   justify-content: center;
@@ -67,10 +67,6 @@ body {
 .dashed {
   border: 1px dashed #2d3648;
 }
-.ant-modal-content {
-  padding-left: 130px !important;
-  justify-content: center !important;
-}
 
 .custom-modal .modal-form-container {
   display: flex;
@@ -86,8 +82,6 @@ body {
 }
 
 .upload-container {
-  width: 100%;
-  max-width: 770px;
   height: 120px;
   display: flex;
   align-items: center;
@@ -116,16 +110,22 @@ body {
   text-wrap: nowrap !important
   ;
 }
+.ant-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .ant-form-item-control-input-content {
   display: flex;
   flex-direction: column;
 }
 .ant-input-outlined {
-  width: 386px !important;
+  width: 384px !important;
   height: 42px !important;
 }
 .ant-select-selector {
-  width: 386px !important;
+  width: 384px !important;
   height: 42px !important;
 }
 .area .ant-input-outlined {
@@ -210,4 +210,42 @@ input[type="radio"] {
 }
 .css-1oitmrd-MuiButtonBase-root-MuiCardActionArea-root {
   height: 455px !important;
+}
+.ant-upload-list-item .ant-upload-list-item-undefined {
+  position: absolute !important;
+  top: 0 !important;
+  border: none !important;
+}
+.ant-upload-list-item-container {
+  position: absolute !important;
+  border: none !important;
+  top: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 120px !important;
+}
+.ant-upload-list-item-name {
+  display: none !important;
+}
+.ant-upload-list-item-undefined {
+  border: none !important;
+}
+.ant-upload-list-item-image {
+  width: 92px !important;
+  height: 82px !important;
+  border-radius: 4px !important;
+}
+.ant-upload-list-item-thumbnail {
+  width: 92px !important;
+  height: 82px !important;
+  border-radius: 4px !important;
+}
+.picture {
+  margin-top: 45px !important;
+  margin-left: -20px !important;
+  border: 1px solid black;
+  background-color: #d9d9d9 !important;
+  border-radius: 50%;
 }

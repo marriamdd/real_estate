@@ -8,6 +8,7 @@ const AgentFormModal = () => {
   const handleCancel = () => {
     setVisible(false);
   };
+
   const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
 
   const handleSubmit = async (values) => {
@@ -46,6 +47,9 @@ const AgentFormModal = () => {
         }
         throw new Error("Received unexpected response format");
       }
+
+      // Reset form fields after successful submission
+      form.resetFields();
       setVisible(false);
     } catch (error) {
       console.error("Error:", error);
@@ -157,7 +161,7 @@ const AgentFormModal = () => {
             getValueFromEvent={(e) => e.fileList}
             rules={[{ required: true, message: "გთხოვთ ატვირთეთ ფოტო" }]}
           >
-            <Upload beforeUpload={() => false} listType="picture">
+            <Upload beforeUpload={() => false} listType="picture" maxCount={1}>
               <div className="upload-container ">
                 <img
                   src="/plus-circle.svg"
@@ -168,7 +172,7 @@ const AgentFormModal = () => {
             </Upload>
           </Form.Item>
 
-          <div className="flex w-full justify-end gap-[15px] pr-[85px]">
+          <div className="flex w-full justify-end gap-[15px] ">
             <button
               className="bg-[#F93B1D] rounded-[10px] h-[47px] py-[10px] border text-[white] px-[16px] text-[16px] font-[500] "
               type="submit"
