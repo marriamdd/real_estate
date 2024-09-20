@@ -7,7 +7,7 @@ import SimilarLocationEstates from "../components/SimilarLocationEstates";
 export default function SingleListing() {
   const { id } = useParams();
   const [currentEstate, setCurrentEstate] = useState(null);
-  const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
+  const token = "9d0ec126-58d8-487a-b170-8661729e6d72";
   useEffect(() => {
     const fetchSingleEstate = async () => {
       try {
@@ -32,7 +32,7 @@ export default function SingleListing() {
   console.log(currentEstate, "curr");
   const navigate = useNavigate();
   return (
-    <div>
+    <div className="pb-[230px]">
       <img
         onClick={() => navigate("/")}
         className="pt-[64px] cursor-pointer pb-[24px]"
@@ -40,6 +40,9 @@ export default function SingleListing() {
         alt="back home"
       />
       <EstateDetails currentEstate={currentEstate} />
+      <p className="text-[32px] text-[#021526] pt-[97px] pb-[52px] font-[500]">
+        ბინები მსგავს ლოკაციაზე
+      </p>
       <SimilarLocationEstates currentEstate={currentEstate} />
     </div>
   );

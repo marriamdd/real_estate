@@ -403,8 +403,8 @@ const AddListing = () => {
               {...register("price", { required: true })}
               type="number"
               id="price"
-              step="0.01"
-              min="0"
+              step="10000"
+              min="10000"
               className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${
                 errors.price
                   ? "border-[#F93B1D]"
@@ -460,7 +460,7 @@ const AddListing = () => {
               {...register("area", { required: true })}
               type="number"
               id="area"
-              step="0.01"
+              step="1"
               min="0"
               className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${
                 errors.price
@@ -517,6 +517,7 @@ const AddListing = () => {
               {...register("bedrooms", { required: true })}
               type="number"
               id="bedrooms"
+              min={1}
               className={`mt-[5px] w-full px-[10px] py-3 text-sm leading-[1.05rem] border border-solid border-darkGrey ${
                 errors.price
                   ? "border-[#F93B1D]"

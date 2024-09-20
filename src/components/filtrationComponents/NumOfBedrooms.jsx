@@ -50,7 +50,12 @@ export default function NumOfBedrooms() {
                 min={1}
                 type="number"
                 value={roomsNum}
-                onChange={(e) => setRoomsNum(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "" || Number(value) > 0) {
+                    setRoomsNum(value);
+                  }
+                }}
                 className="w-[50px] p-2 border font-[400] border-[#808A93] text-[14px] text-[rgba(2, 21, 38, 0.40)] rounded-md mb-4 no-arrows"
               />
             </div>

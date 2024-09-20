@@ -275,3 +275,18 @@ input[type="radio"] {
   justify-content: center !important;
   align-items: center !important;
 }
+
+:where(.css-dev-only-do-not-override-qnu6hi).ant-carousel .slick-prev {
+  margin-left: -100px !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+:where(.css-dev-only-do-not-override-qnu6hi).ant-carousel .slick-next {
+  margin-right: -100px !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.css-19ngvud-MuiCardMedia-root {
+  border-radius: 14px 14px 0px 0px !important;
+}

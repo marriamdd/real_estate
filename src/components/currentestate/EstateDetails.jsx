@@ -19,7 +19,7 @@ export default function EstateDetails({ currentEstate }) {
     <div className="flex gap-[68px]">
       <div className="relative">
         <img
-          className="w-[839px] h-[670px]"
+          className="w-[839px] h-[670px] rounded-t-[14px]  "
           src={currentEstate?.image}
           alt=""
         />

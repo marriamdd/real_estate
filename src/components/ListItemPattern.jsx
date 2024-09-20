@@ -6,13 +6,12 @@ import CardActionArea from "@mui/material/CardActionArea";
 import { Link } from "react-router-dom";
 import useFilterListings from "../customHooks/useFilter";
 import { formatPrice } from "../../public/utils/formatPrice";
-import { formatRange } from "../../public/utils/formatRange";
 
 export default function ActionAreaCard() {
   const filteredListings = useFilterListings();
 
   return (
-    <div className="flex flex-wrap gap-[10px] mt-[32px] rounded-[14px]">
+    <div className="flex flex-wrap pb-[150px] gap-[10px] mt-[32px] rounded-[14px]">
       {filteredListings.length > 0 ? (
         filteredListings.map((listing) => (
           <Link to={`/listing/${listing.id}`} key={listing.id}>
@@ -61,7 +60,7 @@ export default function ActionAreaCard() {
                       </div>
                       <div className="flex items-center gap-[5px]">
                         <img src="/Vector (6).svg" alt="Area icon" />
-                        <span>{formatRange([listing.area, listing.area])}</span>
+                        <span>{`${listing.area} მ²`}</span>
                       </div>
                       <div className="flex items-center gap-[5px]">
                         <img src="/Vector (7).svg" alt="Zip code icon" />

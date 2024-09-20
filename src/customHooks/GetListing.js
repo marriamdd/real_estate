@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const url =
   "https://api.real-estate-manager.redberryinternship.ge/api/real-estates";
-const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
+const token = "9d0ec126-58d8-487a-b170-8661729e6d72";
 const useGetListing = () => {
   const [listings, setListings] = useState([]);
   const [error, setError] = useState(null);

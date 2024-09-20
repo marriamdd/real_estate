@@ -1,11 +1,10 @@
-import { useFilterContext } from "../context/ContextApi"; // Ensure this path is correct
+import { useFilterContext } from "../context/ContextApi";
 import useGetListing from "./GetListing";
 
 export const useFilterListings = () => {
-  const { selectedItems } = useFilterContext(); // Access the selected filters from context
-  const { listings } = useGetListing(); // Get the available listings
+  const { selectedItems } = useFilterContext();
+  const { listings } = useGetListing();
 
-  // Function to parse a range string into a numeric array
   const parseRange = (rangeStr, isPrice = false) => {
     const range = rangeStr
       .replace(/[^\d -]/g, "")
@@ -14,7 +13,6 @@ export const useFilterListings = () => {
     return isPrice ? range.map((val) => val * 1000) : range;
   };
 
-  // If no filters are applied, return all listings
   if (
     !selectedItems.regions.length &&
     !selectedItems.area.length &&
@@ -24,21 +22,17 @@ export const useFilterListings = () => {
     return listings;
   }
 
-  // Filter listings based on selected filter criteria
   return listings.filter((listing) => {
     const { city, bedrooms, area, price } = listing;
 
-    // Check if listing matches region filter
     const matchesRegion =
       !selectedItems.regions.length ||
       selectedItems.regions.includes(city?.region_id);
 
-    // Check if listing matches room filter
     const matchesRooms =
       !selectedItems.rooms.length ||
       selectedItems.rooms.includes(String(bedrooms));
 
-    // Check if listing matches area filter
     const matchesArea =
       !selectedItems.area.length ||
       selectedItems.area.some((range) => {
@@ -46,7 +40,6 @@ export const useFilterListings = () => {
         return area >= minArea && area <= maxArea;
       });
 
-    // Check if listing matches price filter
     const matchesPrice =
       !selectedItems.prices.length ||
       selectedItems.prices.some((range) => {
@@ -54,7 +47,6 @@ export const useFilterListings = () => {
         return price >= minPrice && price <= maxPrice;
       });
 
-    // Return true if all filters match
     return matchesRegion && matchesRooms && matchesArea && matchesPrice;
   });
 };
