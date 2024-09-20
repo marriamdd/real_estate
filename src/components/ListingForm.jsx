@@ -5,7 +5,11 @@ import { useFileUpload } from "./ForListings.jsx/useFileUpload";
 import { useFormLogic } from "./ForListings.jsx/useFormLogic";
 import { useNavigate } from "react-router-dom";
 import useClickOutside from "../customHooks/UseClickOutSide";
+import { useFilterContext } from "../context/ContextApi";
+import AgentFormModal from "./agents/AddAgent";
+import { useFetchAgents } from "./agents/GetAgents";
 const AddListing = () => {
+  const { setAddingAgentModal, addingAgentModal } = useFilterContext();
   const { register, handleSubmit, setValue, errors, isSubmitted, onSubmit } =
     useFormLogic("real-estates");
   const navigate = useNavigate();
@@ -24,14 +28,13 @@ const AddListing = () => {
   const [selectedRegionId, setSelectedRegionId] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const [agents, setAgents] = useState([]);
+  const { agents } = useFetchAgents();
   const [showAgentOptions, setShowAgentOptions] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
 
   useEffect(() => {
     fetchRegions();
     fetchCities();
-    fetchAgents();
   }, []);
 
   useEffect(() => {
@@ -86,35 +89,6 @@ const AddListing = () => {
 
   const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } =
     useFileUpload();
-
-  const fetchAgents = async () => {
-    const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
-    try {
-      const response = await fetch(
-        "https://api.real-estate-manager.redberryinternship.ge/api/agents",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const agents = await response.json();
-      if (agents) {
-        setAgents(agents);
-      }
-      return agents;
-    } catch (error) {
-      console.error("Error fetching agents:", error);
-      return null;
-    }
-  };
 
   const handleAgentSelect = (agent) => {
     setSelectedAgent(agent.name);
@@ -756,11 +730,10 @@ const AddListing = () => {
           </div>
         </div>
 
-        {/* agents */}
         <p className="mt-20 mb-2 font-medium text-blackSecondary leading-[1.221rem]">
           აგენტი
         </p>
-        {/* Agent Dropdown */}
+
         <div className="flex flex-col gap-[5px] ">
           <div className="select-menu w-[384px] relative">
             <div ref={agentModalRef}>
@@ -797,11 +770,18 @@ const AddListing = () => {
               </div>
 
               {showAgentOptions && (
-                <div className="options-list absolute w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-grey rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
+                <div className="options-list absolute border border-[#808A93] w-full mt-1 bg-white text-sm leading-4 border-solid max-h-40 border-grey rounded-lg shadow-lg z-10 overflow-y-auto customScroll transition-all duration-100">
+                  <div
+                    onClick={() => setAddingAgentModal(true)}
+                    className="flex option items-center border-b border-[#808A93] gap-[8px] py-2 px-4 cursor-pointer hover:bg-gray-100"
+                  >
+                    <img src="/plus-circle.svg" alt="დამატება" />
+                    <span>დაამატე აგენტი</span>
+                  </div>
                   {agents.map((agent) => (
                     <div
                       key={agent.id}
-                      className="option py-2 px-4 cursor-pointer hover:bg-gray-100"
+                      className="option border-b border-[#808A93] py-2 px-4 cursor-pointer hover:bg-gray-100"
                       onClick={() => handleAgentSelect(agent)}
                     >
                       {agent.name}
@@ -809,6 +789,7 @@ const AddListing = () => {
                   ))}
                 </div>
               )}
+              {addingAgentModal && <AgentFormModal />}
             </div>
             <input
               {...register("agent_id", { required: true })}

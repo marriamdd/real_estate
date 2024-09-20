@@ -5,6 +5,7 @@ const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
 
 export const useFetchAgents = () => {
   const [agents, setAgents] = useState([]);
+
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -32,5 +33,5 @@ export const useFetchAgents = () => {
     fetchAgents();
   }, []);
 
-  return { agents, error };
+  return { agents, setAgents, error };
 };

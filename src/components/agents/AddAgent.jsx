@@ -1,12 +1,14 @@
-import { useState } from "react";
 import { Modal, Form, Input, Upload, message } from "antd";
+import { useFilterContext } from "../../context/ContextApi";
+import { useFetchAgents } from "./GetAgents";
 
 const AgentFormModal = () => {
-  const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
-
+  const { agents, setAgents } = useFetchAgents();
+  console.log(agents, "from addingagents ");
+  const { addingAgentModal, setAddingAgentModal } = useFilterContext();
   const handleCancel = () => {
-    setVisible(false);
+    setAddingAgentModal(false);
   };
 
   const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
@@ -37,7 +39,8 @@ const AgentFormModal = () => {
       const contentType = response.headers.get("Content-Type") || "";
       if (contentType.includes("application/json")) {
         const data = await response.json();
-        console.log("API response:", data);
+        setAgents((prev) => [...prev, data]);
+
         message.success("Agent added successfully");
       } else {
         const responseText = await response.text();
@@ -48,9 +51,8 @@ const AgentFormModal = () => {
         throw new Error("Received unexpected response format");
       }
 
-      // Reset form fields after successful submission
       form.resetFields();
-      setVisible(false);
+      setAddingAgentModal(false);
     } catch (error) {
       console.error("Error:", error);
       message.error(
@@ -69,14 +71,14 @@ const AgentFormModal = () => {
   return (
     <>
       <button
-        onClick={() => setVisible(true)}
+        onClick={() => setAddingAgentModal(true)}
         className="text-[16px] text-[#F93B1D] rounded-[10px] border border-[#F93B1D] font-[500] py-[10px] px-[16px]"
       >
         + აგენტის დამატება
       </button>
       <Modal
         title="აგენტი დამატება"
-        visible={visible}
+        visible={addingAgentModal}
         onCancel={handleCancel}
         footer={null}
         centered

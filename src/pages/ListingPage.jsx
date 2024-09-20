@@ -7,7 +7,6 @@ export default function ListingPage() {
   console.log(listings, "listingslistingssssssssssssssss");
   return (
     <div>
-      {" "}
       <FilterList />
       <ActionAreaCard />
     </div>

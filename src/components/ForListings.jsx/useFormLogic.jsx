@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { date } from "yup";
 
 export const useFormLogic = () => {
   const {
@@ -9,6 +10,7 @@ export const useFormLogic = () => {
     setValue,
     formState: { errors, isSubmitted },
   } = useForm();
+
   const navigate = useNavigate();
   const onSubmit = async (data) => {
     const token = "9d00259e-59b1-40f6-b6a7-9d6b8d20b8b0";
@@ -30,7 +32,6 @@ export const useFormLogic = () => {
     formData.append("bedrooms", data.bedrooms);
     formData.append("is_rental", data.is_rental);
     console.log(data);
-    console.log("smbmitted");
 
     if (data.image && data.image[0]) {
       formData.append("image", data.image[0]);

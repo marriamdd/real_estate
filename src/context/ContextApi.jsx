@@ -4,7 +4,7 @@ const FilterContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export const FilterProvider = ({ children }) => {
-  const [estates, setEstates] = useState();
+  const [addingAgentModal, setAddingAgentModal] = useState(false);
   const [agents, setAgents] = useState();
 
   const [allSelectedCategory, setAllSelectedCategory] = useState([]);
@@ -34,8 +34,8 @@ export const FilterProvider = ({ children }) => {
         setOptions,
         agents,
         setAgents,
-        estates,
-        setEstates,
+        addingAgentModal,
+        setAddingAgentModal,
         allSelectedCategory,
         setAllSelectedCategory,
       }}
