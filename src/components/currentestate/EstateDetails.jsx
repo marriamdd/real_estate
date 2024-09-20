@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import AgentComponent from "../agents/AgentComponent";
+import DeleteEstate from "../DeleteEstate";
 import { formatPrice } from "../ListItemPattern";
 
 export default function EstateDetails({ currentEstate }) {
@@ -8,8 +9,8 @@ export default function EstateDetails({ currentEstate }) {
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = String(date.getUTCFullYear()).slice(-2); // Get last two digits of the year
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const year = String(date.getUTCFullYear()).slice(-2);
 
     return `${day}/${month}/${year}`;
   }
@@ -75,6 +76,7 @@ export default function EstateDetails({ currentEstate }) {
             </p>
           </div>
           <AgentComponent agent={currentEstate?.agent} />
+          <DeleteEstate id={currentEstate?.id} />
         </div>
       </div>
     </div>
