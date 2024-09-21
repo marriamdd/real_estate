@@ -24,10 +24,18 @@ export const FilterProvider = ({ children }) => {
     console.log("Saving to localStorage:", selectedItems);
     localStorage.setItem("selectedOptions", JSON.stringify(selectedItems));
   }, [selectedItems]);
-
+  const [tempSelectedItems, setTempSelectedItems] = useState([]);
+  const [lowValue, setLowValue] = useState("");
+  const [highValue, setHighValue] = useState("");
   return (
     <FilterContext.Provider
       value={{
+        lowValue,
+        setLowValue,
+        highValue,
+        setHighValue,
+        tempSelectedItems,
+        setTempSelectedItems,
         selectedItems,
         setSelectedItems,
         options,

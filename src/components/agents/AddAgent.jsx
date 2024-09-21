@@ -1,12 +1,14 @@
-import { Modal, Form, Input, Upload, message } from "antd";
+import { Modal, Form, Input, Upload, message, Spin } from "antd";
+import { useState } from "react";
 import { useFilterContext } from "../../context/ContextApi";
 import { useFetchAgents } from "./GetAgents";
 
 const AgentFormModal = () => {
   const [form] = Form.useForm();
-  const { agents, setAgents } = useFetchAgents();
-  console.log(agents, "from addingagents ");
+  const { setAgents } = useFetchAgents();
   const { addingAgentModal, setAddingAgentModal } = useFilterContext();
+  const [loading, setLoading] = useState(false);
+
   const handleCancel = () => {
     setAddingAgentModal(false);
   };
@@ -14,6 +16,7 @@ const AgentFormModal = () => {
   const token = "9d0ec126-58d8-487a-b170-8661729e6d72";
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", values.firstName);
@@ -42,6 +45,7 @@ const AgentFormModal = () => {
         setAgents((prev) => [...prev, data]);
 
         message.success("Agent added successfully");
+        window.location.reload();
       } else {
         const responseText = await response.text();
         console.error("Error response:", responseText);
@@ -58,6 +62,8 @@ const AgentFormModal = () => {
       message.error(
         "Failed to add agent. Please check your input and try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,7 +185,7 @@ const AgentFormModal = () => {
               className="bg-[#F93B1D] rounded-[10px] h-[47px] py-[10px] border text-[white] px-[16px] text-[16px] font-[500] "
               type="submit"
             >
-              დამატება
+              {loading ? <Spin /> : "დამატება"}
             </button>
             <button
               className="text-[#F93B1D] rounded-[10px] h-[47px] py-[10px] border border-[#F93B1D] px-[16px] text-[16px] font-[500] "
