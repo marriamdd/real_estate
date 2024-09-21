@@ -5,9 +5,7 @@ import { useState } from "react";
 export const useFormLogic = () => {
   const savedFormData = JSON.parse(localStorage.getItem("formData")) || {};
   const defaultIsRental =
-    savedFormData.is_rental !== undefined
-      ? Number(savedFormData.is_rental) // Ensure it's a number
-      : 0; // Default to 0 if not set
+    savedFormData.is_rental !== undefined ? Number(savedFormData.is_rental) : 0;
 
   const {
     register,
