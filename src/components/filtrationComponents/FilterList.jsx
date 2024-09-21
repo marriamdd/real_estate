@@ -10,7 +10,8 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Tag } from "antd";
 
 export default function FilterList() {
-  const { selectedItems, setSelectedItems, options } = useFilterContext();
+  const { selectedItems, setSelectedItems, options, setTempSelectedItems } =
+    useFilterContext();
 
   console.log(selectedItems, "selectedItems");
   const handleRemoveItem = (item) => {
@@ -20,6 +21,7 @@ export default function FilterList() {
       updatedItems.regions = selectedItems.regions.filter(
         (selected) => selected !== item
       );
+      setTempSelectedItems((prev) => prev.filter((pr) => pr !== item));
     }
 
     if (selectedItems.prices.includes(item)) {
@@ -50,6 +52,9 @@ export default function FilterList() {
   ];
 
   const handleRemoveFlirtations = () => {
+    setTempSelectedItems([]);
+    localStorage.removeItem("selectedOptions");
+
     setSelectedItems({
       area: [],
 

@@ -7,8 +7,13 @@ import useClickOutside from "../../customHooks/UseClickOutSide";
 
 const CheckboxSelector = ({ options }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { selectedItems, setSelectedItems } = useFilterContext();
-  const [tempSelectedItems, setTempSelectedItems] = useState([]);
+  const {
+    selectedItems,
+    setSelectedItems,
+    tempSelectedItems,
+    setTempSelectedItems,
+  } = useFilterContext();
+
   const modalRef = useRef(null);
 
   useClickOutside(modalRef, () => setIsModalOpen(false));
