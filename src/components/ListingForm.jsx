@@ -8,10 +8,20 @@ import useClickOutside from "../customHooks/UseClickOutSide";
 import { useFilterContext } from "../context/ContextApi";
 import AgentFormModal from "./agents/AddAgent";
 import { useFetchAgents } from "./agents/GetAgents";
+import { useFetchCities } from "./city/GetCityes";
 const AddListing = () => {
   const { setAddingAgentModal, addingAgentModal } = useFilterContext();
-  const { register, handleSubmit, setValue, errors, isSubmitted, onSubmit } =
-    useFormLogic("real-estates");
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    errors,
+    isSubmitted,
+    onSubmit,
+    loading,
+  } = useFormLogic("real-estates");
+  const { cities } = useFetchCities();
   const navigate = useNavigate();
   const agentModalRef = useRef();
   const regionRef = useRef();
@@ -19,8 +29,8 @@ const AddListing = () => {
   useClickOutside(agentModalRef, () => setShowAgentOptions(false));
   useClickOutside(regionRef, () => setShowRegionOptions(false));
   useClickOutside(cityRef, () => setShowCityOptions(false));
+
   const [regions, setRegions] = useState([]);
-  const [cities, setCities] = useState([]);
   const [filteredCities, setFilteredCities] = useState([]);
   const [showRegionOptions, setShowRegionOptions] = useState(false);
   const [showCityOptions, setShowCityOptions] = useState(false);
@@ -34,8 +44,40 @@ const AddListing = () => {
 
   useEffect(() => {
     fetchRegions();
-    fetchCities();
   }, []);
+
+  useEffect(() => {
+    const savedFormData = JSON.parse(localStorage.getItem("formData")) || {};
+    const savedRegion = localStorage.getItem("selectedRegion");
+    const savedCity = localStorage.getItem("selectedCity");
+    const savedAgent = localStorage.getItem("selectedAgent");
+
+    Object.keys(savedFormData).forEach((key) =>
+      setValue(key, savedFormData[key])
+    );
+
+    if (savedRegion) {
+      setSelectedRegion(savedRegion);
+      setSelectedRegionId(savedFormData.region_id);
+    }
+    if (savedCity) {
+      setSelectedCity(savedCity);
+    }
+    if (savedAgent) {
+      setSelectedAgent(savedAgent);
+    }
+  }, [setValue]);
+
+  const watchedValues = watch();
+  useEffect(() => {
+    const debouncedSave = () => {
+      localStorage.setItem("formData", JSON.stringify(watchedValues));
+      localStorage.setItem("selectedRegion", selectedRegion || "");
+      localStorage.setItem("selectedCity", selectedCity || "");
+      localStorage.setItem("selectedAgent", selectedAgent || "");
+    };
+    debouncedSave();
+  }, [watchedValues, selectedRegion, selectedCity, selectedAgent]);
 
   useEffect(() => {
     if (selectedRegionId !== null) {
@@ -60,18 +102,6 @@ const AddListing = () => {
     }
   };
 
-  const fetchCities = async () => {
-    try {
-      const response = await fetch(
-        "https://api.real-estate-manager.redberryinternship.ge/api/cities"
-      );
-      const data = await response.json();
-      setCities(data);
-    } catch (error) {
-      console.error("Failed to fetch cities", error);
-    }
-  };
-
   const handleRegionSelect = (region) => {
     setSelectedRegion(region.name);
     setSelectedRegionId(region.id);
@@ -87,17 +117,50 @@ const AddListing = () => {
     setShowCityOptions(false);
   };
 
-  const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } =
-    useFileUpload();
-
   const handleAgentSelect = (agent) => {
     setSelectedAgent(agent.name);
     setValue("agent_id", agent.id);
     setShowAgentOptions(false);
   };
+
+  const { imagePreview, isPreviewVisible, handleFileChange, handleDelete } =
+    useFileUpload();
+
   const handleClick = () => {
     navigate("/");
+    localStorage.removeItem("formData");
+
     console.log("Button clicked");
+  };
+  useEffect(() => {
+    const savedFormData = JSON.parse(localStorage.getItem("formData")) || {};
+
+    if (savedFormData.is_rental !== undefined) {
+      setValue("is_rental", Number(savedFormData.is_rental));
+    }
+  }, [setValue]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "formData",
+      JSON.stringify({
+        ...watchedValues,
+        is_rental: Number(watchedValues.is_rental),
+      })
+    );
+  }, [watchedValues]);
+
+  const [isRental, setIsRental] = useState(() => {
+    const savedFormData = JSON.parse(localStorage.getItem("formData"));
+    return savedFormData?.is_rental !== undefined
+      ? Number(savedFormData.is_rental)
+      : 0;
+  });
+
+  const handleRadioChange = (event) => {
+    const value = Number(event.target.value);
+    setIsRental(value);
+    setValue("is_rental", value);
   };
   return (
     <div className="mt-[62px] max-w-[790px] mx-auto text-black">
@@ -106,7 +169,6 @@ const AddListing = () => {
       </h1>
 
       <form action="" onSubmit={handleSubmit(onSubmit)}>
-        {/* sell type */}
         <p className="mt-[61px] mb-2 font-medium text-blackSecondary leading-[1.221rem]">
           გარიგების ტიპი
         </p>
@@ -120,7 +182,8 @@ const AddListing = () => {
               type="radio"
               id="sell"
               value={0}
-              checked
+              checked={isRental === 0}
+              onChange={handleRadioChange}
             />
             <label
               htmlFor="sell"
@@ -138,6 +201,8 @@ const AddListing = () => {
               type="radio"
               id="rent"
               value={1}
+              checked={isRental === 1}
+              onChange={handleRadioChange}
             />
             <label
               htmlFor="rent"
@@ -146,6 +211,9 @@ const AddListing = () => {
               ქირავდება
             </label>
           </span>
+          {errors.is_rental && (
+            <span className="text-red-500 text-sm">აირჩიეთ გარიგების ტიპი</span>
+          )}
         </div>
 
         <p className="mt-20 mb-2 font-medium text-blackSecondary leading-[1.221rem]">
@@ -813,7 +881,11 @@ const AddListing = () => {
           >
             გაუქმება
           </button>
-          <ButtonPrimary text="დაამატე ლისტინგი" type="submit" />
+          <ButtonPrimary
+            text="დაამატე ლისტინგი"
+            type="submit"
+            loading={loading}
+          />
         </div>
       </form>
 
